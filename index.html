@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hasselblad Spring Event 2026 - Data Tracking Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-card: #1a1a1a;
+  --bg-card-hover: #222;
+  --border: #2a2a2a;
+  --border-light: #333;
+  --text-primary: #f0ece4;
+  --text-secondary: #999;
+  --text-muted: #666;
+  --accent-gold: #c8a96e;
+  --accent-gold-dim: rgba(200,169,110,0.15);
+  --accent-green: #4ade80;
+  --accent-green-dim: rgba(74,222,128,0.1);
+  --accent-red: #f87171;
+  --accent-red-dim: rgba(248,113,113,0.1);
+  --accent-blue: #60a5fa;
+  --accent-blue-dim: rgba(96,165,250,0.1);
+  --accent-purple: #a78bfa;
+  --accent-purple-dim: rgba(167,139,250,0.1);
+  --accent-amber: #fbbf24;
+  --accent-amber-dim: rgba(251,191,36,0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+}
+.header-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  background: var(--accent-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--bg-primary);
+}
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+.brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.header-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--accent-gold-dim);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--accent-gold);
+  font-weight: 500;
+}
+.header-badge .dot {
+  width: 6px; height: 6px;
+  background: var(--accent-gold);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.header-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Navigation Tabs */
+.nav-bar {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  position: sticky;
+  top: 72px;
+  z-index: 99;
+}
+.nav-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-tab {
+  padding: 16px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.25s;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.nav-tab:hover {
+  color: var(--text-secondary);
+}
+.nav-tab.active {
+  color: var(--accent-gold);
+  border-bottom-color: var(--accent-gold);
+}
+
+/* Main */
+.main {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+}
+
+/* Section Title */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+.section-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  margin-bottom: 28px;
+  width: fit-content;
+}
+.view-btn {
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.view-btn.active {
+  background: var(--accent-gold);
+  color: var(--bg-primary);
+}
+.view-btn:hover:not(.active) {
+  color: var(--text-secondary);
+}
+
+/* KPI Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.kpi-card.gold::before { background: var(--accent-gold); }
+.kpi-card.green::before { background: var(--accent-green); }
+.kpi-card.blue::before { background: var(--accent-blue); }
+.kpi-card.purple::before { background: var(--accent-purple); }
+.kpi-card.red::before { background: var(--accent-red); }
+.kpi-card.amber::before { background: var(--accent-amber); }
+.kpi-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.kpi-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.kpi-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.kpi-change.up { color: var(--accent-green); background: var(--accent-green-dim); }
+.kpi-change.down { color: var(--accent-red); background: var(--accent-red-dim); }
+.kpi-change.neutral { color: var(--text-muted); background: rgba(100,100,100,0.1); }
+.kpi-target {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Phase Timeline */
+.phase-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.phase-item {
+  padding: 20px 24px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.phase-item:last-child { border-right: none; }
+.phase-item:hover { background: var(--bg-card-hover); }
+.phase-item.current {
+  background: var(--accent-gold-dim);
+}
+.phase-item.current::after {
+  content: 'CURRENT';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--accent-gold);
+  background: rgba(200,169,110,0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.phase-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.phase-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.phase-stat {
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Data Table */
+.data-table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 36px;
+}
+.data-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.data-table-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.data-table-badge {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-table thead th {
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+.data-table tbody td {
+  padding: 14px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  white-space: nowrap;
+}
+.data-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+.data-table tbody tr.phase-row {
+  background: var(--accent-gold-dim);
+}
+.data-table tbody tr.phase-row td {
+  font-weight: 600;
+  color: var(--accent-gold);
+  border-bottom: 1px solid rgba(200,169,110,0.2);
+}
+.data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table .highlight { color: var(--accent-gold); font-weight: 600; }
+.data-table .positive { color: var(--accent-green); }
+.data-table .negative { color: var(--accent-red); }
+.data-table .muted { color: var(--text-muted); }
+.data-table .editable-cell {
+  background: rgba(200,169,110,0.08);
+  border: 1px dashed rgba(200,169,110,0.3);
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: text;
+  min-width: 80px;
+}
+.data-table .editable-cell:focus {
+  outline: none;
+  background: rgba(200,169,110,0.15);
+  border-color: var(--accent-gold);
+}
+
+/* Two column grid */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+/* Chart placeholder */
+.chart-area {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  min-height: 300px;
+  position: relative;
+}
+.chart-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.chart-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+/* Bar chart (CSS-only) */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 200px;
+  padding-top: 20px;
+}
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+.bar {
+  width: 100%;
+  max-width: 40px;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  min-height: 4px;
+}
+.bar.gold { background: var(--accent-gold); }
+.bar.blue { background: var(--accent-blue); }
+.bar.green { background: var(--accent-green); }
+.bar.purple { background: var(--accent-purple); }
+.bar-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+.bar-value {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Region badge */
+.region-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.region-badge.na { background: var(--accent-blue-dim); color: var(--accent-blue); }
+.region-badge.eu { background: var(--accent-purple-dim); color: var(--accent-purple); }
+
+/* Status dot */
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+.status-dot.live { background: var(--accent-green); }
+.status-dot.pending { background: var(--accent-amber); }
+.status-dot.ended { background: var(--text-muted); }
+
+/* Section tabs inside a panel */
+.panel-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.panel-tab {
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.panel-tab.active {
+  color: var(--accent-gold);
+  border-bottom-color: var(--accent-gold);
+}
+.panel-tab:hover:not(.active) { color: var(--text-secondary); }
+
+/* Tooltip */
+.info-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--border);
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: help;
+  margin-left: 6px;
+  position: relative;
+}
+.info-tip:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* Hidden panels */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Notes card */
+.notes-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.notes-card h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.notes-card ul {
+  list-style: none;
+  padding: 0;
+}
+.notes-card li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.notes-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  transform: translateY(-50%);
+}
+
+/* Progress bar */
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.progress-fill.gold { background: var(--accent-gold); }
+.progress-fill.green { background: var(--accent-green); }
+.progress-fill.blue { background: var(--accent-blue); }
+
+/* Data source tag */
+.source-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.source-tag.ga4 { background: var(--accent-blue-dim); color: var(--accent-blue); }
+.source-tag.ads { background: var(--accent-purple-dim); color: var(--accent-purple); }
+.source-tag.edm { background: var(--accent-green-dim); color: var(--accent-green); }
+.source-tag.shopify { background: var(--accent-amber-dim); color: var(--accent-amber); }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .two-col { grid-template-columns: 1fr; }
+  .phase-timeline { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .header, .nav-bar, .main { padding-left: 20px; padding-right: 20px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .phase-timeline { grid-template-columns: 1fr; }
+}
+
+/* Print */
+@media print {
+  .header, .nav-bar { position: relative; }
+  .tab-panel { display: block !important; page-break-before: always; }
+  .view-toggle, .nav-bar { display: none; }
+}
+
+/* Subtle entry animation */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kpi-card, .data-table-wrap, .chart-area, .notes-card {
+  animation: fadeInUp 0.5s ease both;
+}
+.kpi-card:nth-child(2) { animation-delay: 0.05s; }
+.kpi-card:nth-child(3) { animation-delay: 0.1s; }
+.kpi-card:nth-child(4) { animation-delay: 0.15s; }
+.kpi-card:nth-child(5) { animation-delay: 0.2s; }
+.kpi-card:nth-child(6) { animation-delay: 0.25s; }
+
+/* Overflow table */
+.table-scroll { overflow-x: auto; }
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo">H</div>
+      <div class="brand-text">
+        <span class="brand-name">Hasselblad</span>
+        <span class="brand-sub">Spring Event 2026 &middot; Data Dashboard</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="header-badge">
+        <span class="dot"></span>
+        Apr 16 &ndash; Apr 30, 2026
+      </div>
+      <div class="header-date">NA + EU Markets</div>
+    </div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <div class="nav-tab active" data-tab="overview">Overview</div>
+    <div class="nav-tab" data-tab="traffic">Traffic (GA4)</div>
+    <div class="nav-tab" data-tab="ads">Ads Performance</div>
+    <div class="nav-tab" data-tab="subscription">Subscription</div>
+    <div class="nav-tab" data-tab="sales">Sales Conversion</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ==================== TAB: OVERVIEW ==================== -->
+<div class="tab-panel active" id="panel-overview">
+  
+  <div class="flex-between">
+    <div>
+      <h1 class="section-title">Campaign Overview</h1>
+      <p class="section-subtitle">HASSELBLAD SPRING EVENT &mdash; NA + EU &middot; X2D II 100C / XCD 35-100E / 907X / Lenses</p>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="phase" onclick="toggleView(this,'overview')">By Phase</button>
+      <button class="view-btn" data-view="day" onclick="toggleView(this,'overview')">By Day</button>
+    </div>
+  </div>
+
+  <!-- Campaign Phase Timeline -->
+  <div class="phase-timeline">
+    <div class="phase-item">
+      <div class="phase-name">Pre-heat</div>
+      <div class="phase-date">Apr 16 &ndash; Apr 20 (5 days)</div>
+      <div class="phase-stat"><span>Core Action</span><span>Email Collection + Teaser</span></div>
+      <div class="phase-stat"><span>Ad Focus</span><span>Email Signup Test (Meta)</span></div>
+      <div class="phase-stat"><span>LP State</span><span>Blurred Calendar + Subscribe CTA</span></div>
+    </div>
+    <div class="phase-item current">
+      <div class="phase-name">Wave 1&ndash;3 (Launch)</div>
+      <div class="phase-date">Apr 21 &ndash; Apr 23 (3 days)</div>
+      <div class="phase-stat"><span>Core Action</span><span>3-wave Limited Drop</span></div>
+      <div class="phase-stat"><span>Ad Focus</span><span>PMax + Search + PLA</span></div>
+      <div class="phase-stat"><span>Products</span><span>X2D II 100C + XCD 35-100E</span></div>
+    </div>
+    <div class="phase-item">
+      <div class="phase-name">Extended</div>
+      <div class="phase-date">Apr 24 &ndash; Apr 30 (7 days)</div>
+      <div class="phase-stat"><span>Core Action</span><span>Lens & 907X Push</span></div>
+      <div class="phase-stat"><span>Ad Focus</span><span>Lens PMax + PLA</span></div>
+      <div class="phase-stat"><span>Products</span><span>907X + Lens Collection</span></div>
+    </div>
+    <div class="phase-item">
+      <div class="phase-name">Full Campaign</div>
+      <div class="phase-date">Apr 16 &ndash; Apr 30 (15 days)</div>
+      <div class="phase-stat"><span>Total Ad Budget</span><span>$10,690 / &yen;74,830</span></div>
+      <div class="phase-stat"><span>Revenue Target</span><span>$363,010</span></div>
+      <div class="phase-stat"><span>Target ROAS</span><span>33.96x</span></div>
+    </div>
+  </div>
+
+  <!-- Overview KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card gold">
+      <div class="kpi-label">Total Revenue (GMV)</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Target: $363,010</div>
+      <div class="progress-bar"><div class="progress-fill gold" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Sessions</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Benchmark: ~50K (NA) + ~93K (EU) /mo</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">New Subscribers</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Benchmark: 567 (NA) + 413 (EU) /mo</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Ad Spend</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Budget: $10,690</div>
+      <div class="progress-bar"><div class="progress-fill blue" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Conversions (Orders)</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Ad Expected Conv: 78.6</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Overall ROAS</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Target: 33.96x</div>
+    </div>
+  </div>
+
+  <!-- Quick Sales Target by Region -->
+  <div class="two-col">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title"><span class="region-badge na">NA</span> North America &mdash; April Target</div>
+        <div class="data-table-badge">Conservative</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Product</th><th class="num">Target Qty</th><th class="num">ASP</th><th class="num">Target Rev</th><th class="num">Actual Rev</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>X2D II 100C</td><td class="num">75</td><td class="num">$69,230</td><td class="num">$5,192,230</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>907X & CFV 100C</td><td class="num">15</td><td class="num">$53,456</td><td class="num">$801,847</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>XCD 35-100E</td><td class="num">100</td><td class="num">$33,212</td><td class="num">$3,321,207</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>Other Lenses</td><td class="num">50</td><td class="num">$25,848</td><td class="num">$1,292,418</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>Accessories</td><td class="num">260</td><td class="num">$1,485</td><td class="num">$386,203</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr class="phase-row"><td>TOTAL</td><td class="num">500</td><td class="num">&mdash;</td><td class="num">$10,993,904</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title"><span class="region-badge eu">EU</span> Europe &mdash; April Target</div>
+        <div class="data-table-badge">Conservative</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Product</th><th class="num">Target Qty</th><th class="num">ASP</th><th class="num">Target Rev</th><th class="num">Actual Rev</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>X2D II 100C</td><td class="num">60</td><td class="num">&euro;75,042</td><td class="num">&euro;4,502,506</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>907X & CFV 100C</td><td class="num">10</td><td class="num">&euro;58,527</td><td class="num">&euro;585,270</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>XCD 35-100E</td><td class="num">40</td><td class="num">&euro;38,780</td><td class="num">&euro;1,551,186</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>Other Lenses</td><td class="num">40</td><td class="num">&euro;32,286</td><td class="num">&euro;1,291,449</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>Accessories</td><td class="num">300</td><td class="num">&euro;1,767</td><td class="num">&euro;530,064</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr class="phase-row"><td>TOTAL</td><td class="num">450</td><td class="num">&mdash;</td><td class="num">&euro;8,460,474</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Campaign Notes -->
+  <div class="notes-card">
+    <h4>Campaign Key Info</h4>
+    <ul>
+      <li>Hook Products: X2D II 100C & XCD 2,8-4/35-100E (pre-order / limited allocation)</li>
+      <li>Cross-sell Products: 907X & CFV 100C, Lenses (55V, 28P, 38V, 90V, 25V, 20-35E)</li>
+      <li>Wave 1-3 Allocation: X2D II 83 units (EU) + to-confirm (NA) / XCD 35-100E 190 units (EU) + to-confirm (NA)</li>
+      <li>Pre-heat: Blurred drop calendar with email subscribe CTA to unlock schedule</li>
+      <li>EDM: 6 emails planned (2 pre-heat flows, 3 wave alerts, 1 post-event follow-up)</li>
+      <li>Ad Budget: $10,690 total across Google Search, PMax, PLA, Meta (email signup test)</li>
+      <li>Markets: North America (US) + Europe (DE/EU/UK)</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ==================== TAB: TRAFFIC ==================== -->
+<div class="tab-panel" id="panel-traffic">
+  
+  <div class="flex-between">
+    <div>
+      <h1 class="section-title">Traffic Data</h1>
+      <p class="section-subtitle"><span class="source-tag ga4">GA4</span> Website traffic from Google Analytics 4</p>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="phase" onclick="toggleView(this,'traffic')">By Phase</button>
+      <button class="view-btn" data-view="day" onclick="toggleView(this,'traffic')">By Day</button>
+    </div>
+  </div>
+
+  <!-- Traffic KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Sessions</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">vs. prev period --</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">New Users</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">vs. prev period --</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">LP Page Views</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Landing Page: /featured</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Avg. Session Duration</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">vs. prev period --</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Bounce Rate</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">vs. prev period --</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Pages / Session</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">vs. prev period --</div>
+    </div>
+  </div>
+
+  <!-- Traffic by Phase -->
+  <div id="traffic-phase-view">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Traffic by Campaign Phase <span class="info-tip" data-tip="Data from GA4 - All site traffic during campaign">?</span></div>
+        <div style="display:flex;gap:8px">
+          <span class="region-badge na">NA</span>
+          <span class="region-badge eu">EU</span>
+        </div>
+      </div>
+      <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Phase</th><th>Dates</th><th>Region</th>
+          <th class="num">Sessions</th><th class="num">Users</th><th class="num">New Users</th>
+          <th class="num">LP PV (/featured)</th><th class="num">Bounce Rate</th>
+          <th class="num">Avg Session Dur</th><th class="num">Pages/Session</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Pre-heat</td><td>4/16-4/20</td><td><span class="region-badge na">NA</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Pre-heat</td><td>4/16-4/20</td><td><span class="region-badge eu">EU</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Launch (W1-3)</td><td>4/21-4/23</td><td><span class="region-badge na">NA</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Launch (W1-3)</td><td>4/21-4/23</td><td><span class="region-badge eu">EU</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Extended</td><td>4/24-4/30</td><td><span class="region-badge na">NA</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Extended</td><td>4/24-4/30</td><td><span class="region-badge eu">EU</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr class="phase-row"><td>TOTAL</td><td>4/16-4/30</td><td>ALL</td>
+            <td class="num">--</td><td class="num">--</td><td class="num">--</td>
+            <td class="num">--</td><td class="num">--</td><td class="num">--</td><td class="num">--</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Traffic by Day -->
+  <div id="traffic-day-view" style="display:none">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Daily Traffic Breakdown <span class="info-tip" data-tip="Fill in daily data from GA4">?</span></div>
+      </div>
+      <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Date</th><th>Phase</th><th>Region</th>
+          <th class="num">Sessions</th><th class="num">Users</th><th class="num">New Users</th>
+          <th class="num">LP PV</th><th class="num">Bounce Rate</th>
+          <th class="num">Avg Dur</th><th class="num">Pgs/Sess</th>
+        </tr></thead>
+        <tbody id="traffic-daily-rows">
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Traffic Source Breakdown -->
+  <div class="two-col" style="margin-top:24px">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Traffic by Source / Medium</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Source / Medium</th><th class="num">Sessions</th><th class="num">% Share</th><th class="num">New Users</th><th class="num">Conv Rate</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>google / cpc</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>google / organic</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>(direct) / (none)</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>email / edm</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>meta / paid_social</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>Other</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Key Landing Pages Performance</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Page</th><th class="num">PV</th><th class="num">Unique PV</th><th class="num">Avg Time</th><th class="num">Exit Rate</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>/featured (Activity LP)</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>/products/x2d-ii-100c</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>/products/xcd-35-100e</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>/products/907x-cfv-100c</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+          <tr><td>Homepage</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td><td class="num editable-cell" contenteditable="true">--</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== TAB: ADS ==================== -->
+<div class="tab-panel" id="panel-ads">
+  
+  <div class="flex-between">
+    <div>
+      <h1 class="section-title">Ads Performance</h1>
+      <p class="section-subtitle"><span class="source-tag ads">ADS</span> Google Ads (Search, PMax, PLA) + Meta (Email Signup Test)</p>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="phase" onclick="toggleView(this,'ads')">By Phase</button>
+      <button class="view-btn" data-view="day" onclick="toggleView(this,'ads')">By Day</button>
+    </div>
+  </div>
+
+  <!-- Ads KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card purple">
+      <div class="kpi-label">Total Ad Spend</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Budget: $10,690</div>
+      <div class="progress-bar"><div class="progress-fill blue" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Clicks</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Expected: 17,954</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Avg CPC</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Plan avg: $0.60</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">Total Conversions</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Expected: 78.6</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Ad Revenue</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Expected: $363,010</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">ROAS</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Target: 33.96x</div>
+    </div>
+  </div>
+
+  <!-- Pre-heat Email Signup Test (Meta) -->
+  <div id="ads-phase-view">
+  <div class="data-table-wrap">
+    <div class="data-table-header">
+      <div class="data-table-title">Pre-heat: Meta Email Signup Test (4/16-4/21) <span class="info-tip" data-tip="Meta ads focused on email collection during pre-heat phase">?</span></div>
+      <div class="source-tag ads">META</div>
+    </div>
+    <div class="table-scroll">
+    <table class="data-table">
+      <thead><tr>
+        <th>Campaign</th><th>Region</th><th>Audience</th>
+        <th class="num">Budget</th><th class="num">Spend</th><th class="num">Impressions</th>
+        <th class="num">Clicks</th><th class="num">CTR</th><th class="num">CPC</th>
+        <th class="num">Email Signups</th><th class="num">CPL</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>X2D II Pre-heat (Rmkt)</td><td><span class="region-badge na">US</span></td><td>Rmkt + High-intent</td>
+          <td class="num">$300</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II Pre-heat (Prosp)</td><td><span class="region-badge na">US</span></td><td>Industry + Competitor</td>
+          <td class="num">$180</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II Pre-heat</td><td><span class="region-badge eu">DE</span></td><td>Rmkt + Product KW</td>
+          <td class="num">$210</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>XCD 35-100E Pre-heat</td><td><span class="region-badge na">US</span></td><td>Rmkt + Lens KW</td>
+          <td class="num">$210</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>XCD 35-100E Pre-heat</td><td><span class="region-badge eu">DE</span></td><td>Rmkt + Lens KW</td>
+          <td class="num">$150</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr class="phase-row"><td>PRE-HEAT TOTAL</td><td>ALL</td><td>&mdash;</td>
+          <td class="num">$1,050</td>
+          <td class="num">--</td><td class="num">--</td><td class="num">--</td>
+          <td class="num">--</td><td class="num">--</td><td class="num">--</td><td class="num">--</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Launch Period Ads -->
+  <div class="data-table-wrap">
+    <div class="data-table-header">
+      <div class="data-table-title">Launch Period: Google Ads (4/21-4/23) <span class="info-tip" data-tip="Search + PMax + PLA campaigns during 3-wave drop">?</span></div>
+      <div class="source-tag ads">GOOGLE</div>
+    </div>
+    <div class="table-scroll">
+    <table class="data-table">
+      <thead><tr>
+        <th>Channel</th><th>Product</th><th>Region</th>
+        <th class="num">Budget</th><th class="num">Spend</th><th class="num">Clicks</th>
+        <th class="num">CPC</th><th class="num">Conv</th><th class="num">CVR</th>
+        <th class="num">Revenue</th><th class="num">ROAS</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Search (Brand)</td><td>Brand KW</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$600</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>Search (Brand)</td><td>Brand KW</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$450</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>Search (Product)</td><td>X2D II</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$360</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>Search (Product)</td><td>X2D II</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$300</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PMax</td><td>X2D II (Rmkt)</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$540</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PMax</td><td>X2D II (Prosp)</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$450</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PMax</td><td>X2D II</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$300</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PMax</td><td>Lenses</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$450</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PMax</td><td>Lenses</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$360</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PLA</td><td>Camera+Lens</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$450</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PLA</td><td>Camera+Lens</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$450</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr class="phase-row"><td>LAUNCH TOTAL</td><td>&mdash;</td><td>ALL</td>
+          <td class="num">$4,710</td>
+          <td class="num">--</td><td class="num">--</td><td class="num">--</td>
+          <td class="num">--</td><td class="num">--</td><td class="num">--</td><td class="num">--</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Extended Period Ads -->
+  <div class="data-table-wrap">
+    <div class="data-table-header">
+      <div class="data-table-title">Extended Period: Google Ads (4/24-4/30) <span class="info-tip" data-tip="Lens + 907X push & cleanup campaigns">?</span></div>
+      <div class="source-tag ads">GOOGLE</div>
+    </div>
+    <div class="table-scroll">
+    <table class="data-table">
+      <thead><tr>
+        <th>Channel</th><th>Product</th><th>Region</th>
+        <th class="num">Budget</th><th class="num">Spend</th><th class="num">Clicks</th>
+        <th class="num">CPC</th><th class="num">Conv</th><th class="num">CVR</th>
+        <th class="num">Revenue</th><th class="num">ROAS</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>PMax/Product</td><td>X2D II (wind-down)</td><td><span class="region-badge na">US/DE</span></td>
+          <td class="num">$1,500</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>Brand Search</td><td>Brand KW</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$840</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>Brand Search</td><td>Brand KW</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$700</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PMax</td><td>Lenses</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$700</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PMax</td><td>Lenses</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$490</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PLA</td><td>All</td><td><span class="region-badge na">US</span></td>
+          <td class="num">$420</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>PLA</td><td>All</td><td><span class="region-badge eu">DE</span></td>
+          <td class="num">$280</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr class="phase-row"><td>EXTENDED TOTAL</td><td>&mdash;</td><td>ALL</td>
+          <td class="num">$4,930</td>
+          <td class="num">--</td><td class="num">--</td><td class="num">--</td>
+          <td class="num">--</td><td class="num">--</td><td class="num">--</td><td class="num">--</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  </div>
+
+  <!-- Ads by Day view -->
+  <div id="ads-day-view" style="display:none">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Daily Ads Performance Summary</div>
+      </div>
+      <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Date</th><th>Phase</th>
+          <th class="num">Spend</th><th class="num">Impressions</th><th class="num">Clicks</th>
+          <th class="num">CPC</th><th class="num">CTR</th><th class="num">Conv</th>
+          <th class="num">Revenue</th><th class="num">ROAS</th>
+        </tr></thead>
+        <tbody id="ads-daily-rows">
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== TAB: SUBSCRIPTION ==================== -->
+<div class="tab-panel" id="panel-subscription">
+  
+  <div class="flex-between">
+    <div>
+      <h1 class="section-title">Subscription Data</h1>
+      <p class="section-subtitle"><span class="source-tag edm">EDM</span> Email subscription & Mailchimp/Klaviyo data</p>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="phase" onclick="toggleView(this,'subscription')">By Phase</button>
+      <button class="view-btn" data-view="day" onclick="toggleView(this,'subscription')">By Day</button>
+    </div>
+  </div>
+
+  <!-- Subscription KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card green">
+      <div class="kpi-label">New Subscribers (Campaign)</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Benchmark: 567 (NA) + 413 (EU) per month</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Subscription Rate</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Benchmark: 1.1% (NA) / 0.4% (EU)</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">EDM Sends (Total)</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">6 emails planned</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Avg Open Rate</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">Industry avg ~20%</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Avg Click Rate</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">Industry avg ~2.5%</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">EDM-Attributed Revenue</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">--</div>
+    </div>
+  </div>
+
+  <!-- Subscription by Phase -->
+  <div id="subscription-phase-view">
+  <div class="two-col">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Email Subscription by Phase</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Phase</th><th>Region</th>
+          <th class="num">Sessions</th><th class="num">Subscribers</th><th class="num">Sub Rate</th>
+          <th class="num">Source</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Pre-heat</td><td><span class="region-badge na">NA</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num">LP Calendar Unlock</td>
+          </tr>
+          <tr><td>Pre-heat</td><td><span class="region-badge eu">EU</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num">LP Calendar Unlock</td>
+          </tr>
+          <tr><td>Launch</td><td><span class="region-badge na">NA</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num">Notify Me + Pop-up</td>
+          </tr>
+          <tr><td>Launch</td><td><span class="region-badge eu">EU</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num">Notify Me + Pop-up</td>
+          </tr>
+          <tr><td>Extended</td><td><span class="region-badge na">NA</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num">Pop-up</td>
+          </tr>
+          <tr><td>Extended</td><td><span class="region-badge eu">EU</span></td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num">Pop-up</td>
+          </tr>
+          <tr class="phase-row"><td>TOTAL</td><td>ALL</td>
+            <td class="num">--</td><td class="num">--</td><td class="num">--</td><td class="num">&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">EDM Campaign Performance</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Email</th><th class="num">Send Date</th>
+          <th class="num">Delivered</th><th class="num">Open Rate</th>
+          <th class="num">Click Rate</th><th class="num">Revenue</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Schedule Unlocked (Flow)</td><td class="num">4/16+</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Meet the Flagships</td><td class="num">4/17+</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 1 Alert</td><td class="num">4/21</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 2 Alert</td><td class="num">4/22</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 3 (Last Chance)</td><td class="num">4/23</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Post-event Follow-up</td><td class="num">4/24</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+
+  <!-- Subscription by Day -->
+  <div id="subscription-day-view" style="display:none">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Daily Subscription Tracking</div>
+      </div>
+      <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Date</th><th>Phase</th><th>Region</th>
+          <th class="num">New Subs</th><th class="num">Cumulative</th>
+          <th class="num">Source</th><th class="num">Unsub</th>
+        </tr></thead>
+        <tbody id="subscription-daily-rows">
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical Reference -->
+  <div class="notes-card" style="margin-top:24px">
+    <h4>Historical Subscription Rate Reference (25-26)</h4>
+    <ul>
+      <li>NA Mar 2026: 27,357 sessions / 495 subs = 1.81% (pop-up changed to price-drop promo)</li>
+      <li>NA Apr 2026: 50,961 sessions / 567 subs = 1.11%</li>
+      <li>EU Mar 2026: 144,248 sessions / 320 subs = 0.22% (pop-up changed to price-drop promo)</li>
+      <li>EU Apr 2026: 93,135 sessions / 413 subs = 0.44%</li>
+      <li>NA peak: Jun 2025 = 2.46% (944 subs / 38,392 sessions)</li>
+      <li>EU peak: Jan 2026 = 1.51% (1,090 subs / 72,383 sessions, new product launch)</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ==================== TAB: SALES ==================== -->
+<div class="tab-panel" id="panel-sales">
+  
+  <div class="flex-between">
+    <div>
+      <h1 class="section-title">Sales & Conversion</h1>
+      <p class="section-subtitle"><span class="source-tag shopify">SHOPIFY</span> Order & revenue data from Shopify backend</p>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="phase" onclick="toggleView(this,'sales')">By Phase</button>
+      <button class="view-btn" data-view="day" onclick="toggleView(this,'sales')">By Day</button>
+    </div>
+  </div>
+
+  <!-- Sales KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card gold">
+      <div class="kpi-label">Total GMV</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Target: NA $10.99M + EU &euro;8.46M</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Orders</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Target: NA 500 + EU 450 units</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Conversion Rate</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Ad CVR target: 0.44%</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">AOV (Avg Order Value)</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">--</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Hook Product Sold (X2D+100E)</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-target">Allocation: X2D 83(EU) / 100E 190(EU)</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Lens Attach Rate</div>
+      <div class="kpi-value" contenteditable="true">--</div>
+      <div class="kpi-change neutral">Cross-sell effectiveness</div>
+    </div>
+  </div>
+
+  <!-- Sales by Phase -->
+  <div id="sales-phase-view">
+  <div class="data-table-wrap">
+    <div class="data-table-header">
+      <div class="data-table-title">Sales by Product & Phase <span class="info-tip" data-tip="Product-level sales breakdown by campaign phase">?</span></div>
+    </div>
+    <div class="table-scroll">
+    <table class="data-table">
+      <thead><tr>
+        <th>Product</th><th>Phase</th><th>Region</th>
+        <th class="num">Orders</th><th class="num">Units</th>
+        <th class="num">Revenue</th><th class="num">AOV</th>
+        <th class="num">Stock Remaining</th>
+      </tr></thead>
+      <tbody>
+        <!-- X2D II -->
+        <tr><td>X2D II 100C</td><td>Pre-heat</td><td><span class="region-badge na">NA</span></td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II 100C</td><td>Pre-heat</td><td><span class="region-badge eu">EU</span></td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II 100C</td><td>Wave 1</td><td><span class="region-badge na">NA</span></td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II 100C</td><td>Wave 1</td><td><span class="region-badge eu">EU</span></td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II 100C</td><td>Wave 2</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II 100C</td><td>Wave 3</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>X2D II 100C</td><td>Extended</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <!-- XCD -->
+        <tr style="border-top: 2px solid var(--border)"><td>XCD 35-100E</td><td>Wave 1</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>XCD 35-100E</td><td>Wave 2</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>XCD 35-100E</td><td>Wave 3</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>XCD 35-100E</td><td>Extended</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <!-- Other -->
+        <tr style="border-top: 2px solid var(--border)"><td>907X & CFV 100C</td><td>All Phases</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>Other Lenses</td><td>All Phases</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr><td>Accessories</td><td>All Phases</td><td>ALL</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+          <td class="num editable-cell" contenteditable="true">--</td>
+        </tr>
+        <tr class="phase-row"><td>CAMPAIGN TOTAL</td><td>&mdash;</td><td>ALL</td>
+          <td class="num">--</td><td class="num">--</td><td class="num">--</td>
+          <td class="num">--</td><td class="num">&mdash;</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Wave Allocation Tracker -->
+  <div class="two-col" style="margin-top:24px">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Wave Allocation Tracker &mdash; X2D II 100C</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Wave</th><th>Region</th>
+          <th class="num">Allocated</th><th class="num">Sold</th><th class="num">Remaining</th><th class="num">Sell-through</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Wave 1</td><td>EU</td><td class="num">16.65</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 1</td><td>UK</td><td class="num">11.7</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 2</td><td>EU</td><td class="num">7.4</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 2</td><td>UK</td><td class="num">5.2</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 3</td><td>EU</td><td class="num">12.95</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 3</td><td>UK</td><td class="num">9.1</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr class="phase-row"><td>TOTAL</td><td>EU+UK</td><td class="num">83</td>
+            <td class="num">--</td><td class="num">--</td><td class="num">--</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Wave Allocation Tracker &mdash; XCD 35-100E</div>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Wave</th><th>Region</th>
+          <th class="num">Allocated</th><th class="num">Sold</th><th class="num">Remaining</th><th class="num">Sell-through</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Wave 1</td><td>EU</td><td class="num">25.2</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 1</td><td>DE</td><td class="num">10.8</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 2</td><td>EU</td><td class="num">11.2</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 2</td><td>DE</td><td class="num">4.8</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 3</td><td>EU</td><td class="num">19.6</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr><td>Wave 3</td><td>DE</td><td class="num">8.4</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+            <td class="num editable-cell" contenteditable="true">--</td>
+          </tr>
+          <tr class="phase-row"><td>TOTAL</td><td>EU+DE</td><td class="num">190</td>
+            <td class="num">--</td><td class="num">--</td><td class="num">--</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+
+  <!-- Sales by Day -->
+  <div id="sales-day-view" style="display:none">
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <div class="data-table-title">Daily Sales Tracking</div>
+      </div>
+      <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Date</th><th>Phase</th><th>Region</th>
+          <th class="num">Orders</th><th class="num">Units</th>
+          <th class="num">Revenue</th><th class="num">AOV</th>
+          <th class="num">CVR</th><th class="num">X2D Sold</th><th class="num">100E Sold</th>
+        </tr></thead>
+        <tbody id="sales-daily-rows">
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /main -->
+
+<script>
+// Tab switching
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+  });
+});
+
+// View toggle (by phase / by day)
+function toggleView(btn, section) {
+  const parent = btn.closest('.view-toggle');
+  parent.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const view = btn.dataset.view;
+  const phaseEl = document.getElementById(section + '-phase-view');
+  const dayEl = document.getElementById(section + '-day-view');
+  if (phaseEl && dayEl) {
+    phaseEl.style.display = view === 'phase' ? 'block' : 'none';
+    dayEl.style.display = view === 'day' ? 'block' : 'none';
+  }
+}
+
+// Generate daily rows
+function generateDailyRows(containerId, columns) {
+  const dates = [];
+  const phases = [
+    { start: '2026-04-16', end: '2026-04-20', name: 'Pre-heat' },
+    { start: '2026-04-21', end: '2026-04-21', name: 'Wave 1' },
+    { start: '2026-04-22', end: '2026-04-22', name: 'Wave 2' },
+    { start: '2026-04-23', end: '2026-04-23', name: 'Wave 3' },
+    { start: '2026-04-24', end: '2026-04-30', name: 'Extended' },
+  ];
+  
+  const regions = ['NA', 'EU'];
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  let html = '';
+  phases.forEach(phase => {
+    const start = new Date(phase.start);
+    const end = new Date(phase.end);
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dateStr = `${d.getMonth()+1}/${d.getDate()}`;
+      regions.forEach(region => {
+        const badge = region === 'NA' ? '<span class="region-badge na">NA</span>' : '<span class="region-badge eu">EU</span>';
+        html += `<tr><td>${dateStr}</td><td>${phase.name}</td><td>${badge}</td>`;
+        for (let i = 0; i < columns; i++) {
+          html += `<td class="num editable-cell" contenteditable="true">--</td>`;
+        }
+        html += '</tr>';
+      });
+    }
+    // Phase subtotal
+    html += `<tr class="phase-row"><td>${phase.name} Total</td><td>&mdash;</td><td>ALL</td>`;
+    for (let i = 0; i < columns; i++) {
+      html += `<td class="num">--</td>`;
+    }
+    html += '</tr>';
+  });
+  
+  // Grand total
+  html += `<tr class="phase-row"><td><strong>GRAND TOTAL</strong></td><td>&mdash;</td><td>ALL</td>`;
+  for (let i = 0; i < columns; i++) {
+    html += `<td class="num">--</td>`;
+  }
+  html += '</tr>';
+  
+  container.innerHTML = html;
+}
+
+// Generate daily rows for each section
+generateDailyRows('traffic-daily-rows', 7);  // Sessions, Users, New Users, LP PV, Bounce Rate, Avg Dur, Pgs/Sess
+generateDailyRows('ads-daily-rows', 7);       // Spend, Impressions, Clicks, CPC, CTR, Conv, Revenue, ROAS -> 7 since Date+Phase already shown
+generateDailyRows('subscription-daily-rows', 4); // New Subs, Cumulative, Source, Unsub
+generateDailyRows('sales-daily-rows', 7);     // Orders, Units, Revenue, AOV, CVR, X2D Sold, 100E Sold
+
+// Auto-save to localStorage
+function saveData() {
+  const editables = document.querySelectorAll('[contenteditable="true"]');
+  const data = {};
+  editables.forEach((el, i) => {
+    data[i] = el.textContent;
+  });
+  localStorage.setItem('hasselblad_dashboard_data', JSON.stringify(data));
+}
+
+function loadData() {
+  const saved = localStorage.getItem('hasselblad_dashboard_data');
+  if (saved) {
+    const data = JSON.parse(saved);
+    const editables = document.querySelectorAll('[contenteditable="true"]');
+    editables.forEach((el, i) => {
+      if (data[i] !== undefined) {
+        el.textContent = data[i];
+      }
+    });
+  }
+}
+
+// Save on edit
+document.addEventListener('input', function(e) {
+  if (e.target.getAttribute('contenteditable') === 'true') {
+    clearTimeout(window._saveTimeout);
+    window._saveTimeout = setTimeout(saveData, 1000);
+  }
+});
+
+// Load saved data
+loadData();
+</script>
+
+</body>
+</html>
